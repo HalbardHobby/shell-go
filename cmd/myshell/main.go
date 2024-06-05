@@ -29,6 +29,9 @@ func main() {
 			os.Exit(code)
 		case "echo":
 			fmt.Fprint(os.Stdout, strings.Join(args, " "), "\n")
+		case "pwd":
+			pwd, _ := os.Executable()
+			fmt.Fprint(os.Stdout, pwd+"\n")
 		case "type":
 			switch args[0] {
 			case "exit", "echo", "type":
