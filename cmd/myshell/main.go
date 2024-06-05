@@ -32,39 +32,51 @@ func main() {
 		case "echo":
 			fmt.Fprint(os.Stdout, strings.Join(args, " "), "\n")
 		case "pwd":
-			pwd, err := os.Getwd()
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error printing current directtory: %s\n", err)
-			} else {
-				fmt.Fprintf(os.Stdout, "%s\n", pwd)
-			}
+			getPwd()
 		case "cd":
-			target := path.Clean(args[0])
-			if !path.IsAbs(target) {
-				pwd, _ := os.Getwd()
-				target = filepath.Join(pwd, target)
-			}
-			err := os.Chdir(target)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "%s: No such file or directory\n", target)
-			}
+			cd(args[0])
 		case "type":
-			switch args[0] {
-			case "exit", "echo", "type":
-				fmt.Fprintf(os.Stdout, "%s is a shell builtin\n", args[0])
-			default:
-				path, found := lookupExecutable(args[0])
-				if found {
-					fmt.Fprintf(os.Stdout, "%s is %s\n", args[0], path+"/"+args[0])
-				} else {
-					fmt.Fprintf(os.Stdout, "%s: not found\n", args[0])
-				}
-			}
+			typeCommand(args[0])
 		default:
 			err := executeProgram(command, args...)
 			if err != nil {
 				fmt.Fprintf(os.Stdout, "%s: command not found\n", command)
 			}
+		}
+	}
+}
+
+func getPwd() {
+	pwd, err := os.Getwd()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error printing current directtory: %s\n", err)
+	} else {
+		fmt.Fprintf(os.Stdout, "%s\n", pwd)
+	}
+}
+
+func cd(target string) {
+	target = path.Clean(target)
+	if !path.IsAbs(target) {
+		pwd, _ := os.Getwd()
+		target = filepath.Join(pwd, target)
+	}
+	err := os.Chdir(target)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%s: No such file or directory\n", target)
+	}
+}
+
+func typeCommand(command string) {
+	switch command {
+	case "exit", "echo", "pwd", "cd", "type":
+		fmt.Fprintf(os.Stdout, "%s is a shell builtin\n", command)
+	default:
+		path, found := lookupExecutable(command)
+		if found {
+			fmt.Fprintf(os.Stdout, "%s is %s\n", command, path+"/"+command)
+		} else {
+			fmt.Fprintf(os.Stdout, "%s: not found\n", command)
 		}
 	}
 }
