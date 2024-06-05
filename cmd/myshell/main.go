@@ -43,10 +43,10 @@ func main() {
 			if !path.IsAbs(target) {
 				pwd, _ := os.Getwd()
 				target = filepath.Join(pwd, target)
-				err := os.Chdir(target)
-				if err != nil {
-					fmt.Fprintf(os.Stderr, "%s: No such file or directory\n", target)
-				}
+			}
+			err := os.Chdir(target)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "%s: No such file or directory\n", target)
 			}
 		case "type":
 			switch args[0] {
