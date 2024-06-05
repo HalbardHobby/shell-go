@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -35,6 +37,16 @@ func main() {
 				fmt.Fprintf(os.Stderr, "Error printing current directtory: %s\n", err)
 			} else {
 				fmt.Fprintf(os.Stdout, "%s\n", pwd)
+			}
+		case "cd":
+			target := path.Clean(args[0])
+			if !path.IsAbs(target) {
+				pwd, _ := os.Getwd()
+				target = filepath.Join(pwd, target)
+				err := os.Chdir(target)
+				if err != nil {
+					fmt.Fprintf(os.Stderr, "%s: No such file or directory\n", target)
+				}
 			}
 		case "type":
 			switch args[0] {
