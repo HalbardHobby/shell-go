@@ -28,6 +28,13 @@ func main() {
 			os.Exit(code)
 		case "echo":
 			fmt.Fprint(os.Stdout, strings.Join(args, " "), "\n")
+		case "type":
+			switch args[0] {
+			case "exit", "echo", "type":
+				fmt.Fprintf(os.Stdout, "%s is a shell builtin\n", args[0])
+			default:
+				fmt.Fprintf(os.Stdout, "%s not found\n", args[0])
+			}
 		default:
 			fmt.Fprint(os.Stdout, command, ": command not found\n")
 		}
