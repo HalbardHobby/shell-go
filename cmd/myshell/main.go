@@ -37,7 +37,7 @@ func main() {
 				if found {
 					fmt.Fprintf(os.Stdout, "%s is %s\n", args[0], path+"/"+args[0])
 				} else {
-					fmt.Fprintf(os.Stdout, "%s: command not found\n", args[0])
+					fmt.Fprintf(os.Stdout, "%s: not found\n", args[0])
 				}
 			}
 		default:
