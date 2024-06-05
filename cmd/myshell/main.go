@@ -56,6 +56,9 @@ func getPwd() {
 }
 
 func cd(target string) {
+	if target == "~" {
+		target = os.Getenv("HOME")
+	}
 	target = path.Clean(target)
 	if !path.IsAbs(target) {
 		pwd, _ := os.Getwd()
