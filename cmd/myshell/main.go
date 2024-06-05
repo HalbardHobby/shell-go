@@ -30,8 +30,12 @@ func main() {
 		case "echo":
 			fmt.Fprint(os.Stdout, strings.Join(args, " "), "\n")
 		case "pwd":
-			pwd, _ := os.Executable()
-			fmt.Fprint(os.Stdout, pwd+"\n")
+			pwd, err := os.Getwd()
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Error printing current directtory: %s\n", err)
+			} else {
+				fmt.Fprintf(os.Stdout, "%s\n", pwd)
+			}
 		case "type":
 			switch args[0] {
 			case "exit", "echo", "type":
