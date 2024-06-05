@@ -33,10 +33,36 @@ func main() {
 			case "exit", "echo", "type":
 				fmt.Fprintf(os.Stdout, "%s is a shell builtin\n", args[0])
 			default:
-				fmt.Fprintf(os.Stdout, "%s not found\n", args[0])
+				path, found := lookupExecutable(args[0])
+				if found {
+					fmt.Fprintf(os.Stdout, "%s is %s\n", args[0], path+"/"+args[0])
+				} else {
+					fmt.Fprintf(os.Stdout, "%s: command not found\n", args[0])
+				}
 			}
 		default:
 			fmt.Fprint(os.Stdout, command, ": command not found\n")
 		}
 	}
+}
+
+func lookupExecutable(cmd string) (string, bool) {
+	path_val := os.Getenv("PATH")
+
+	// Iterate through all provided paths
+	for _, path := range strings.Split(path_val, ":") {
+
+		// Iterate through all entries in given path
+		entries, _ := os.ReadDir(path)
+		for _, entry := range entries {
+
+			// check name and if it is a directory
+			if entry.Name() == cmd && !entry.IsDir() {
+				return path, true
+			}
+		}
+	}
+
+	// return empty path and false by default
+	return "", false
 }
